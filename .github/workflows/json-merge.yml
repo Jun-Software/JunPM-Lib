@@ -21,7 +21,7 @@ jobs:
       - name: Merge JSON files recursively
         run: |
           echo "Searching for JSON files in libs/ directory..."
-          find libs -name "*.json" ! -name "auto.json" -print0 | xargs -0 jq -s 'add' > auto.json
+          find libs -name "*.json" ! -name "auto.json" -print0 | xargs -0 jq -s 'if length == 0 then null else add end' > auto.json
           echo "Merge complete."
 
       - name: Configure Git
