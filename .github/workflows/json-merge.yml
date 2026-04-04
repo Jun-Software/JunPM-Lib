@@ -1,0 +1,40 @@
+name: Merge JSON Files
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  merge-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Merge JSON files recursively
+        run: |
+          echo "Searching for JSON files in libs/ directory..."
+          find libs -name "*.json" ! -name "auto.json" -print0 | xargs -0 jq -s 'add' > auto.json
+          echo "Merge complete."
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and Push changes
+        run: |
+          git add auto.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "ci: auto-merge json files [skip ci]"
+            git push
+          fi

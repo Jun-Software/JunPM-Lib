@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lib Schema",
+  "description": "A JSON schema for JunPM.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "Lib Name",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 20,
+      "pattern": "^[a-zA-Z0-9_]+$"
+    },
+    "url": {
+      "description": "Lib URL",
+      "type": "string"
+    }
+  },
+  "required": ["id", "url"],
+  "additionalProperties": false
+}

@@ -1,0 +1,74 @@
+name: JSON Validation and Auto-Merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "**/*.json"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install -g ajv-cli
+
+      - name: Identify changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.json
+            !**/*.schema.json
+            !**/schema.json
+
+      - name: Compile Schema
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          if [ -f schema.json ]; then
+            ajv compile -s schema.json --valid --spec v7 -o validate_func.js
+          else
+            echo "Error: schema.json not found"
+            exit 1
+          fi
+
+      - name: Validate Files
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          has_error=false
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ "$file" == *"schema.json"* ]]; then
+              continue
+            fi
+            if ! node validate_func.js "$file" > /dev/null 2>&1; then
+              echo "::error file=$file,title=JSON Schema Error::Validation failed for $file"
+              has_error=true
+            fi
+          done
+          if [ "$has_error" = true ]; then
+            exit 1
+          fi
+
+  auto-merge:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Enable Auto-Merge
+        run: |
+          gh pr merge --squash --auto "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
