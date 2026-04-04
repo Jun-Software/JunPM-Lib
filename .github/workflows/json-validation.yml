@@ -36,7 +36,7 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
           if [ -f schema.json ]; then
-            ajv compile -s schema.json --ajv v7 -o validate_func.js
+            ajv compile -s schema.json -o validate_func.js
           else
             echo "Error: schema.json not found"
             exit 1
