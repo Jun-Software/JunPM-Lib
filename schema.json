@@ -7,8 +7,6 @@
     "id": {
       "description": "Lib Name",
       "type": "string",
-      "minLength": 3,
-      "maxLength": 20,
       "pattern": "^[a-zA-Z0-9_-]+$"
     },
     "url": {
