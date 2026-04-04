@@ -1,7 +1,10 @@
 name: JSON Validation and Auto-Merge
+permissions:
+  contents: write
+  pull-requests: write
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
     paths:
       - "**/*.json"
@@ -36,7 +39,7 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
           if [ -f schema.json ]; then
-            ajv compile -s schema.json --valid --spec v7 -o validate_func.js
+            ajv compile -s schema.json -o validate_func.js
           else
             echo "Error: schema.json not found"
             exit 1
