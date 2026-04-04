@@ -4,7 +4,7 @@
   "description": "A JSON schema for JunPM.",
   "type": "object",
   "properties": {
-    "id": {
+    "name": {
       "description": "Lib Name",
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$"
