@@ -1,18 +1,38 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Lib Schema",
-  "description": "A JSON schema for JunPM.",
-  "type": "object",
-  "properties": {
-    "name": {
-      "description": "Lib Name",
-      "type": "string"
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Pack Schema",
+    "description": "A JSON schema for JunPM.",
+    "type": "object",
+    "properties": {
+        "name": {
+            "description": "Pack Name",
+            "type": "string"
+        },
+        "type": {
+            "description": "Pack Type",
+            "type": "string",
+            "enum": ["lib", "whl"]
+        },
+        "versions": {
+            "description": "Pack URL",
+            "type": "object",
+            "minItems": 1,
+            "uniqueItems": true,
+            "properties": {
+                "latest": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "required": [
+                "latest"
+            ]
+        }
     },
-    "url": {
-      "description": "Lib URL",
-      "type": "string"
-    }
-  },
-  "required": ["id", "url"],
-  "additionalProperties": false
+    "required": [
+        "name", 
+        "type", 
+        "versions"
+    ],
+    "additionalProperties": false
 }

@@ -1,4 +1,7 @@
 {
     "name": "test_win_x64",
-    "url": "https://github.com/Jun-Software/JunPM-TestPackage/raw/refs/heads/master/windows/test.dll"
+    "type": "lib",
+    "versions": {
+        "latest": "https://github.com/Jun-Software/JunPM-TestPackage/raw/refs/heads/master/windows/test.dll"
+    }
 }
